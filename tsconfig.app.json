@@ -1,0 +1,6 @@
+{
+    "extends": "./tsconfig.json",
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/lib/utils.js", "src/components/ui/accordion.jsx", "src/components/ui/button.jsx", "src/components/ui/select.jsx", "src/components/ui/carousel.jsx", "src/components/ui/card.jsx", "src/components/ui/drawer.jsx", "src/components/ui/input.jsx", "src/components/ui/label.jsx", "src/components/ui/radio-group.jsx", "src/components/ui/textarea.jsx"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
