@@ -1,13 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
 import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Link } from "react-router-dom";
 import useFetch from "@/hooks/use-fetch";
 import { deleteJob, saveJob } from "@/api/apiJobs";
@@ -20,9 +14,9 @@ const JobCard = ({
   savedInit = false,
   onJobAction = () => {},
   isMyJob = false,
+  onDeleteJob = () => {}, // Added prop for delete action
 }) => {
   const [saved, setSaved] = useState(savedInit);
-
   const { user } = useUser();
 
   const { loading: loadingDeleteJob, fn: fnDeleteJob } = useFetch(deleteJob, {
@@ -36,16 +30,27 @@ const JobCard = ({
   } = useFetch(saveJob);
 
   const handleSaveJob = async () => {
-    await fnSavedJob({
-      user_id: user.id,
-      job_id: job.id,
-    });
-    onJobAction();
+    try {
+      const response = await fnSavedJob({
+        user_id: user.id,
+        job_id: job.id,
+      });
+      if (response) {
+        setSaved(true);
+        onJobAction(); // Refresh saved jobs list if needed
+      }
+    } catch (error) {
+      console.error("Error saving job:", error);
+    }
   };
 
   const handleDeleteJob = async () => {
-    await fnDeleteJob();
-    onJobAction();
+    try {
+      await fnDeleteJob();
+      onDeleteJob(); // Trigger the delete handler passed from SavedJobs
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
 
   useEffect(() => {
@@ -66,13 +71,14 @@ const JobCard = ({
               size={18}
               className="text-red-300 cursor-pointer"
               onClick={handleDeleteJob}
+              title="Delete Job"
             />
           )}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 flex-1">
         <div className="flex justify-between">
-          {job.company && <img src={job.company.logo_url} className="h-6" />}
+          {job.company && <img src={job.company.logo_url} alt="Company Logo" className="h-6" />}
           <div className="flex gap-2 items-center">
             <MapPinIcon size={15} /> {job.location}
           </div>
@@ -92,6 +98,7 @@ const JobCard = ({
             className="w-15"
             onClick={handleSaveJob}
             disabled={loadingSavedJob}
+            title={saved ? "Unsave Job" : "Save Job"}
           >
             {saved ? (
               <Heart size={20} fill="red" stroke="red" />

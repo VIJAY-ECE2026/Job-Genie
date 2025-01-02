@@ -11,7 +11,7 @@ import PostJob from "./pages/post-job";
 import JobListing from "./pages/joblisting";
 import MyJobs from "./pages/my-jobs";
 import SavedJobs from "./pages/saved-jobs";
-import JobPage from "./pages/job";
+import JobPage from "./pages/jobs";
 
 import "./App.css";
 
